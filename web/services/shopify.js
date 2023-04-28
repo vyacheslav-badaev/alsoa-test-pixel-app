@@ -33,4 +33,24 @@ const shopify = shopifyApp({
 	sessionStorage: new SQLiteSessionStorage(DB_PATH),
 });
 
+export const fetchShop = async (session) => {
+	const GET_SHPOP = `
+		{
+			shop {
+				id
+				name
+				email
+				myshopifyDomain
+			}
+		}
+	`;
+
+	const client = new shopify.api.clients.Graphql({
+		session,
+	});
+
+	return await client.query({
+		data: GET_SHPOP,
+	});
+};
 export default shopify;

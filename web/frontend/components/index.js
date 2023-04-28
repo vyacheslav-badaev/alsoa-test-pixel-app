@@ -1,2 +1,2 @@
-export { ProductsCard } from "./ProductsCard";
-export * from "./providers";
+export { EventsCard } from './EventsCard.jsx';
+export * from './providers';
