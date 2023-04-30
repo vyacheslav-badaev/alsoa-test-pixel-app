@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, TextContainer, Text } from '@shopify/polaris';
+import { AlphaCard, VerticalStack, Text, Button } from '@shopify/polaris';
 import { Toast } from '@shopify/app-bridge-react';
 import { useAppQuery, useAuthenticatedFetch } from '../hooks';
 
@@ -11,7 +11,7 @@ export function EventsCard() {
 
 	const {
 		data,
-		refetch: refetchProductCount,
+		refetch: refetchEventsCount,
 		isLoading: isLoadingCount,
 		isRefetching: isRefetchingCount,
 	} = useAppQuery({
@@ -32,7 +32,7 @@ export function EventsCard() {
 		const response = await fetch('/api/products/create');
 
 		if (response.ok) {
-			await refetchProductCount();
+			await refetchEventsCount();
 			setToastProps({ content: '5 products created!' });
 		} else {
 			setIsLoading(false);
@@ -46,17 +46,27 @@ export function EventsCard() {
 	return (
 		<>
 			{toastMarkup}
-			<Card title="Events Total Counter" sectioned>
-				<TextContainer spacing="loose">
+			<AlphaCard title="Events Total Counter" sectioned>
+				<VerticalStack gap="2">
 					<p>Sample events counter shows the total number of events sent to Alsoa Api</p>
 					<Text as="h4" variant="headingMd">
 						TOTAL EVENTS
 						<Text variant="bodyMd" as="p" fontWeight="semibold">
-							{isLoadingCount ? '-' : data.count}
+							{isLoadingCount || isRefetchingCount ? '-' : data.count}
 						</Text>
 					</Text>
-				</TextContainer>
-			</Card>
+				</VerticalStack>
+				<div style={{ marginTop: '1rem' }}>
+					<Button
+						primary
+						loading={isLoadingCount || isRefetchingCount}
+						onClick={() => refetchEventsCount()}
+						disabled={isLoadingCount || isRefetchingCount}
+					>
+						Refresh
+					</Button>
+				</div>
+			</AlphaCard>
 		</>
 	);
 }

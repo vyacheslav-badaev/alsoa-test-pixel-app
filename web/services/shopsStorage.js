@@ -1,16 +1,26 @@
+// @ts-check
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 class ShopsStorageService {
 	/**
+	 * @typedef AddShopInsertData
+	 * @property {number} eventsCount Count Alsoa requests.
+	 * @property {string} domain Shop domain.
+	 * @property {string} email Shop email.
+	 * @property {string} name Shop name.
+	 * @property {string} shopifyId Shopify Shop graphql id.
+	 */
+
+	/**
 	 * Add new shop to database
 	 *
-	 * @param {Object} data
+	 * @param {AddShopInsertData} data
 	 * @returns {Promise<Shop>}
 	 *
 	 */
 	async addShop({ name, email, domain, accessToken, shopifyId, eventsCount }) {
-		return await prisma.shop.create({
+		return await prisma.Shop.create({
 			data: {
 				name,
 				email,
@@ -26,11 +36,11 @@ class ShopsStorageService {
 	 * Get shop by domain
 	 *
 	 * @param {String} domain
-	 * @returns {Promise<Shop>}
+	 * @returns {Promise<object>}
 	 *
 	 * */
 	async getShopByDomain(domain) {
-		return await prisma.shop.findUnique({
+		return await prisma.Shop.findUnique({
 			where: {
 				domain,
 			},
@@ -39,24 +49,20 @@ class ShopsStorageService {
 
 	/**
 	 * Increase events counter for specific shop
-	 * @param domain
-	 * @return {Promise<*>}
+	 * @param {String} domain
+	 * @return {Promise<boolean>}
 	 */
 	async increaseShopCounter(domain) {
-		await prisma.shop.update(
-			{
-				where: {
-					domain,
+		await prisma.Shop.update({
+			where: {
+				domain,
+			},
+			data: {
+				eventsCount: {
+					increment: 1,
 				},
 			},
-			{
-				data: {
-					eventsCount: {
-						increment: 1,
-					},
-				},
-			}
-		);
+		});
 		return true;
 	}
 
@@ -64,14 +70,27 @@ class ShopsStorageService {
 	 * Update shop data
 	 * @param domain
 	 * @param data
-	 * @return {Promise<*>}
+	 * @return {Promise<object>}
 	 */
 	async updateShop(domain, data) {
-		return await prisma.shop.update({
+		return await prisma.Shop.update({
 			where: {
 				domain,
 			},
 			data,
+		});
+	}
+
+	/**
+	 * Delete shop by domain
+	 * @param domain
+	 * @return {Promise<object>}
+	 */
+	async deleteShop(domain) {
+		return await prisma.Shop.delete({
+			where: {
+				domain,
+			},
 		});
 	}
 }

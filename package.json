@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@shopify/app": "3.45.1",
-    "@shopify/cli": "3.45.1"
+    "@shopify/cli": "3.45.1",
+    "@shopify/web-pixels-extension": "^0.1.6"
   },
   "author": "viacheslavbadaiev",
   "devDependencies": {

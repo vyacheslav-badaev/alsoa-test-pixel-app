@@ -1,10 +1,45 @@
-import { fetchShop } from '../services/shopify.js';
+import { fetchShop, pixelExtensionActivate } from '../services/shopify.js';
+import ShopsStorageService from '../services/shopsStorage.js';
 
-export const afterAuth = async (req, res, next) => {
+/**
+ * After auth middleware. Store shop data to our db.
+ *
+ * @return {(function(*, *, *): Promise<void>)|*}
+ */
+export const afterAuth = () => async (req, res, next) => {
 	try {
-		// TODO - save new store to db or update existing
 		const session = res.locals.shopify.session;
-		await fetchShop(session);
+		const shopifyShopData = await fetchShop(session);
+
+		if (!shopifyShopData) {
+			throw new Error('Fetch shopifyShopData failed');
+		}
+
+		const shop = await ShopsStorageService.getShopByDomain(shopifyShopData.myshopifyDomain);
+
+		if (!shop) {
+			await ShopsStorageService.addShop({
+				domain: shopifyShopData.myshopifyDomain,
+				name: shopifyShopData.name,
+				email: shopifyShopData.email,
+				shopifyId: shopifyShopData.id,
+				accessToken: session.accessToken,
+				eventsCount: 0,
+			});
+		}
+
+		if (shop) {
+			await ShopsStorageService.updateShop(shopifyShopData.myshopifyDomain, {
+				name: shopifyShopData.name,
+				email: shopifyShopData.email,
+				shopifyId: shopifyShopData.id,
+				accessToken: session.accessToken,
+			});
+		}
+
+		await pixelExtensionActivate(session);
+
+		next();
 	} catch (e) {
 		next(e);
 	}

@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "debug": "node --inspect-brk index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",
+    "dev": "npx prisma db push && npx prisma generate && cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",
     "serve": "cross-env NODE_ENV=production node index.js"
   },
   "type": "module",
@@ -16,6 +16,7 @@
     "@prisma/client": "^4.6.1",
     "@shopify/shopify-app-express": "^2.0.0",
     "@shopify/shopify-app-session-storage-sqlite": "^1.2.1",
+    "axios": "^1.4.0",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "serve-static": "^1.14.1"

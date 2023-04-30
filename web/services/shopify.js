@@ -33,8 +33,22 @@ const shopify = shopifyApp({
 	sessionStorage: new SQLiteSessionStorage(DB_PATH),
 });
 
+/**
+ * @typedef FetchShopifyShopDataReturn
+ * @property {string} myshopifyDomain Shop domain.
+ * @property {string} email Shop email.
+ * @property {string} name Shop name.
+ * @property {string} id Shopify Shop graphql id.
+ */
+
+/**
+ * Fetch shop data from Shopify
+ * @param session
+ * @return {Promise<FetchShopifyShopDataReturn>}
+ */
 export const fetchShop = async (session) => {
-	const GET_SHPOP = `
+	try {
+		const GET_SHPOP = `
 		{
 			shop {
 				id
@@ -45,12 +59,73 @@ export const fetchShop = async (session) => {
 		}
 	`;
 
-	const client = new shopify.api.clients.Graphql({
-		session,
-	});
+		const client = new shopify.api.clients.Graphql({
+			session,
+		});
 
-	return await client.query({
-		data: GET_SHPOP,
-	});
+		const { body: resBody } = await client.query({
+			data: GET_SHPOP,
+		});
+
+		if (resBody?.errors) {
+			throw new Error(resBody.errors[0].message);
+		}
+
+		return resBody?.data?.shop;
+	} catch (e) {
+		console.error('Error response', e?.response?.errors);
+		console.error('Error message', e.message);
+		throw new Error(e.message);
+	}
 };
+
+/**
+ * register pixel extension
+ * @param session
+ * @return {Promise<object>}
+ */
+export const pixelExtensionActivate = async (session) => {
+	try {
+		const settingID = Buffer.from(session.shop).toString('base64');
+		const WEB_PIXEL_EXTENSION_ACTIVATE = `
+		mutation {
+            webPixelCreate(webPixel:
+              { settings: "{\\"accountID\\":\\"${settingID}\\"}" }
+            ) {
+              userErrors {
+                code
+                field
+                message
+              }
+              webPixel {
+                settings
+                id
+              }
+            }
+          }`;
+
+		const client = new shopify.api.clients.Graphql({
+			session,
+		});
+
+		const res = await client.query({
+			data: {
+				query: WEB_PIXEL_EXTENSION_ACTIVATE,
+			},
+		});
+
+		const { body: resBody } = res;
+
+		if (resBody?.errors) {
+			throw new Error(resBody.errors[0].message);
+		}
+
+		return resBody?.data;
+	} catch (e) {
+		console.error('Error response', e?.response?.errors);
+		console.error('Error message', e.message);
+		throw new Error(e.message);
+	}
+};
+
 export default shopify;
