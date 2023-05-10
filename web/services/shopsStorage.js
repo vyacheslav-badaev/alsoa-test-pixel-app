@@ -10,17 +10,18 @@ class ShopsStorageService {
 	 * @property {string} email Shop email.
 	 * @property {string} name Shop name.
 	 * @property {string} shopifyId Shopify Shop graphql id.
+	 * @property {string} accessToken
 	 */
 
 	/**
 	 * Add new shop to database
 	 *
 	 * @param {AddShopInsertData} data
-	 * @returns {Promise<Shop>}
+	 * @returns {Promise<import('@prisma/client').Shop>}
 	 *
 	 */
 	async addShop({ name, email, domain, accessToken, shopifyId, eventsCount }) {
-		return await prisma.Shop.create({
+		return await prisma.shop.create({
 			data: {
 				name,
 				email,
@@ -36,11 +37,11 @@ class ShopsStorageService {
 	 * Get shop by domain
 	 *
 	 * @param {String} domain
-	 * @returns {Promise<object>}
+	 * @returns {Promise<import('@prisma/client').Shop | null>}
 	 *
 	 * */
 	async getShopByDomain(domain) {
-		return await prisma.Shop.findUnique({
+		return await prisma.shop.findUnique({
 			where: {
 				domain,
 			},
@@ -53,27 +54,31 @@ class ShopsStorageService {
 	 * @return {Promise<boolean>}
 	 */
 	async increaseShopCounter(domain) {
-		await prisma.Shop.update({
-			where: {
-				domain,
-			},
-			data: {
-				eventsCount: {
-					increment: 1,
+		try {
+			await prisma.shop.update({
+				where: {
+					domain,
 				},
-			},
-		});
+				data: {
+					eventsCount: {
+						increment: 1,
+					},
+				},
+			});
+		} catch (err) {
+			console.log('increaseShopCounterErr', err);
+		}
 		return true;
 	}
 
 	/**
 	 * Update shop data
-	 * @param domain
+	 * @param {String} domain
 	 * @param data
 	 * @return {Promise<object>}
 	 */
 	async updateShop(domain, data) {
-		return await prisma.Shop.update({
+		return await prisma.shop.update({
 			where: {
 				domain,
 			},
@@ -83,11 +88,11 @@ class ShopsStorageService {
 
 	/**
 	 * Delete shop by domain
-	 * @param domain
+	 * @param {String} domain
 	 * @return {Promise<object>}
 	 */
 	async deleteShop(domain) {
-		return await prisma.Shop.delete({
+		return await prisma.shop.delete({
 			where: {
 				domain,
 			},

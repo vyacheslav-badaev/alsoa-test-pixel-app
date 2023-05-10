@@ -9,7 +9,10 @@ import shopify from './services/shopify.js';
 import AppWebhooks from './webhooks/index.js';
 import { afterAuth } from './middlewares/afterAuth.js';
 
-const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
+const PORT = parseInt(
+	process.env.BACKEND_PORT || process.env.PORT || '3000',
+	10
+);
 
 const STATIC_PATH =
 	process.env.NODE_ENV === 'production'
@@ -34,7 +37,11 @@ app.post(
 	})
 );
 // Route for pixel extension requests
-app.post('/api/events', express.text({ type: '*/*', limit: '2mb' }), EventsController.addEvent);
+app.post(
+	'/api/events',
+	express.text({ type: '*/*', limit: '2mb' }),
+	EventsController.addEvent
+);
 
 app.use('/api/*', shopify.validateAuthenticatedSession());
 
