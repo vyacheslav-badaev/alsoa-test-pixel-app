@@ -1,5 +1,7 @@
+import { AlsoaEvents } from '../constants/alsoaEvents.js';
 import AlsoaService from '../services/alsoa.js';
 import ShopsStorage from '../services/shopsStorage.js';
+
 class EventsController {
 	constructor() {}
 
@@ -14,7 +16,8 @@ class EventsController {
 		try {
 			//TODO for production I recommend to use queue for handle events(SQS, RabbitMQ, etc.)
 			const { id: accountID } = req.query;
-			const event = JSON.parse(req.body);
+			const eventData = JSON.parse(req.body);
+			const { event, ttclid } = eventData;
 			const shop = Buffer.from(accountID, 'base64').toString('ascii');
 			const shopData = await ShopsStorage.getShopByDomain(shop);
 
@@ -22,16 +25,20 @@ class EventsController {
 				throw new Error('Shop does not have tiktok pixel id or token');
 			}
 
+			if (!ttclid) {
+				throw new Error('No clids');
+			}
+
 			const alsoaEventData = {
 				pixel_id: shopData.tiktokPixelId,
 				token: shopData.tiktokAccessToken,
-				ttclid: 'E.C.P.v3fQ2RHacdksKfofPmlyuStIIHJ4Af1tKYxF9zz2c2PLx1Oaw15oHpcfl5AH', //TODO take from url query when user visited website by click in tiktok(need theme-extension or custom script-tag)
+				ttclid: eventData.ttclid,
 				time: event.timestamp,
 				url: event.context.document.referrer,
 				uas: event.context.navigator.userAgent,
 				content_name: event.context.document.title,
 				external_id: event.clientId,
-				event: 'ViewContent',
+				event: AlsoaEvents[event.name],
 				// first_name: "" //TODO event "page_viewed" not provided by pixel extension  need custom solution
 				// last_name: "" //TODO event "page_viewed" not provided by pixel extension need custom solution
 				// email: "" //TODO event "page_viewed" not provided by pixel extension need custom solution
@@ -43,7 +50,7 @@ class EventsController {
 
 			return res.status(200).send({ message: 'Event added' });
 		} catch (error) {
-			console.error('addEvent Error', error.message);
+			// console.error('addEvent Error', error.message);
 			next(error);
 		}
 	}
