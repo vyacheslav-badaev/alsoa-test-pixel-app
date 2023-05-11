@@ -48,7 +48,7 @@ const shopify = shopifyApp({
  */
 export const fetchShop = async (session) => {
 	try {
-		const GET_SHPOP = `
+		const GET_SHOP = `
 		{
 			shop {
 				id
@@ -64,7 +64,7 @@ export const fetchShop = async (session) => {
 		});
 
 		const { body: resBody } = await client.query({
-			data: GET_SHPOP,
+			data: GET_SHOP,
 		});
 
 		if (resBody?.errors) {
@@ -89,20 +89,66 @@ export const pixelExtensionActivate = async (session) => {
 		const settingID = Buffer.from(session.shop).toString('base64');
 		const WEB_PIXEL_EXTENSION_ACTIVATE = `
 		mutation {
-            webPixelCreate(webPixel:
-              { settings: "{\\"accountID\\":\\"${settingID}\\"}" }
-            ) {
-              userErrors {
-                code
-                field
-                message
-              }
-              webPixel {
-                settings
-                id
-              }
-            }
-          }`;
+      webPixelCreate(
+				webPixel: { settings: "{\\"accountID\\":\\"${settingID}\\"}" }
+      ) {
+        userErrors {
+          code
+          field
+          message
+        }
+        webPixel {
+          settings
+          id
+        }
+      }
+    }`;
+
+		const client = new shopify.api.clients.Graphql({
+			session,
+		});
+
+		const res = await client.query({
+			data: {
+				query: WEB_PIXEL_EXTENSION_ACTIVATE,
+			},
+		});
+
+		const { body: resBody } = res;
+
+		if (resBody?.errors) {
+			throw new Error(resBody.errors[0].message);
+		}
+
+		console.log(resBody?.data);
+
+		return resBody?.data;
+	} catch (e) {
+		console.error('Error response', e?.response?.errors);
+		console.error('Error message', e.message);
+		throw new Error(e.message);
+	}
+};
+
+/**
+ * register pixel extension
+ * @param session
+ * @param {string} id
+ * @return {Promise<object>}
+ */
+export const pixelExtensionDeactivate = async (session, id) => {
+	try {
+		const settingID = Buffer.from(session.shop).toString('base64');
+		const WEB_PIXEL_EXTENSION_ACTIVATE = `
+		mutation {
+      webPixelDelete(id: "${id}") {
+        userErrors {
+          code
+          field
+          message
+        }
+      }
+    }`;
 
 		const client = new shopify.api.clients.Graphql({
 			session,

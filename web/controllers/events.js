@@ -17,18 +17,14 @@ class EventsController {
 			//TODO for production I recommend to use queue for handle events(SQS, RabbitMQ, etc.)
 			const { id: accountID } = req.query;
 			const eventData = JSON.parse(req.body);
-			const { event, ttclid, fbclid } = eventData;
+			const { event, ttclid, fbclid, sclid, epik } = eventData;
 			const shop = Buffer.from(accountID, 'base64').toString('ascii');
 			const shopData = await ShopsStorage.getShopByDomain(shop);
 
 			console.log(event.name);
 
-			if (!shopData || !shopData.tiktokPixelId || !shopData.tiktokAccessToken) {
+			if (!shopData) {
 				throw new Error('Shop does not have tiktok pixel id or token');
-			}
-
-			if (!ttclid && !fbclid) {
-				throw new Error('No clids');
 			}
 
 			const alsoaEventData = {
@@ -56,9 +52,7 @@ class EventsController {
 				// etc like ip, mobil, country, zip... //TODO event "page_viewed" not provided by pixel extension need custom solution
 			};
 
-			console.log('alsoaEventData', alsoaEventData);
-
-			if (ttclid) {
+			if (ttclid && shopData.tiktokPixelId && shopData.tiktokAccessToken) {
 				const result = await AlsoaService.sendEvent({
 					...alsoaEventData,
 					pixel_id: shopData.tiktokPixelId,
@@ -68,7 +62,7 @@ class EventsController {
 				result && (await ShopsStorage.increaseShopCounter(shop));
 			}
 
-			if (fbclid) {
+			if (fbclid && shopData.facebookPixelId && shopData.facebookAccessToken) {
 				const result = await AlsoaService.sendEvent({
 					...alsoaEventData,
 					pixel_id: shopData.facebookPixelId,
@@ -78,9 +72,29 @@ class EventsController {
 				result && (await ShopsStorage.increaseShopCounter(shop));
 			}
 
+			if (sclid && shopData.snapchatPixelId && shopData.snapchatAccessToken) {
+				const result = await AlsoaService.sendEvent({
+					...alsoaEventData,
+					pixel_id: shopData.snapchatPixelId,
+					token: shopData.snapchatAccessToken,
+					sclid,
+				});
+				result && (await ShopsStorage.increaseShopCounter(shop));
+			}
+
+			if (epik && shopData.snapchatPixelId && shopData.snapchatAccessToken) {
+				const result = await AlsoaService.sendEvent({
+					...alsoaEventData,
+					pixel_id: shopData.snapchatPixelId,
+					token: shopData.snapchatAccessToken,
+					epik,
+				});
+				result && (await ShopsStorage.increaseShopCounter(shop));
+			}
+
 			return res.status(200).send({ message: 'Event added' });
 		} catch (error) {
-			// console.error('addEvent Error', error.message);
+			console.error('addEvent Error', error.message);
 			next(error);
 		}
 	}
