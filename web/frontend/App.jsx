@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import { Frame } from '@shopify/polaris';
+import './assets/style.css'
 
 import { AppBridgeProvider, QueryProvider, PolarisProvider } from './components';
 

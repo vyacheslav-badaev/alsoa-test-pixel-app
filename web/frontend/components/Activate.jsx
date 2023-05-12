@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from 'react';
-import { AccountConnection, Toast } from '@shopify/polaris';
+import { useEffect, useState } from 'react';
+import { AccountConnection, Toast, Spinner } from '@shopify/polaris';
 import { useAuthenticatedFetch } from '../hooks/index.js';
 
 export function Activate({ currectConnected }) {
 	const authFetch = useAuthenticatedFetch();
 
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
-	const [connected, setConnected] = useState(currectConnected);
+	const [connected, setConnected] = useState(false);
 
 	useEffect(() => {
 		setConnected(currectConnected);
@@ -14,7 +15,9 @@ export function Activate({ currectConnected }) {
 
 	const handleActionError = () => setError((prev) => !prev);
 
-	const handleAction = useCallback(() => {
+	const handleAction = () => {
+		if(loading)	return;
+		setLoading(true);
 		authFetch(`/api/shop/${connected ? 'deactivate' : 'activate'}`, {
 			method: 'POST',
 		})
@@ -25,10 +28,11 @@ export function Activate({ currectConnected }) {
 					handleActionError();
 				}
 			})
-			.catch(handleActionError);
-	}, [connected]);
+			.catch(handleActionError)
+			.finally(() => setLoading(false));
+	};
 
-	const buttonText = connected ? 'Deactivate' : 'Activate';
+	const buttonText = loading ? <Spinner accessibilityLabel="Loading..." size="small" />: connected ? 'Deactivate' : 'Activate';
 	const details = connected ? 'App is active' : 'App is deactivated';
 
 	const toastMarkupError = error ? (
@@ -42,15 +46,17 @@ export function Activate({ currectConnected }) {
 
 	return (
 		<>
-			<AccountConnection
-				connected={connected}
-				title="Shopify Pixel Alsoa"
-				action={{
-					content: buttonText,
-					onAction: handleAction,
-				}}
-				details={details}
-			/>
+			<div className={'accountActiveWrapper'}>
+				<AccountConnection
+					connected={connected}
+					title="Shopify Pixel Alsoa"
+					action={{
+						content: buttonText,
+						onAction: handleAction,
+					}}
+					details={details}
+				/>
+			</div>
 			{toastMarkupError}
 		</>
 	);
