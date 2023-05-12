@@ -58,11 +58,17 @@ class ShopsController {
 		try {
 			const session = res.locals.shopify.session;
 
-			const res = await pixelExtensionActivate(session);
+			const result = await pixelExtensionActivate(session);
+
+			if (result?.webPixel?.id) {
+				await ShopsStorage.updateShop(session.shop, {
+					pixelId: result.webPixel.id,
+				});
+			}
 
 			return res.sendStatus(200);
 		} catch (e) {
-			console.error('updateShopProfile Error', e.message);
+			console.error('activateApp Error', e);
 			next(e);
 		}
 	}
@@ -78,11 +84,20 @@ class ShopsController {
 		try {
 			const session = res.locals.shopify.session;
 
-			const res = await pixelExtensionDeactivate(session);
+			const shop = await ShopsStorage.getShopByDomain(session.shop);
+			if (!shop || !shop.pixelId) {
+				return res.status(404).json({
+					message: 'Shop or pixel id not found',
+				});
+			}
+
+			await pixelExtensionDeactivate(session, shop.pixelId);
+
+			await ShopsStorage.updateShop(session.shop, { pixelId: null });
 
 			return res.sendStatus(200);
 		} catch (e) {
-			console.error('updateShopProfile Error', e.message);
+			console.error('deactivateApp Error', e);
 			next(e);
 		}
 	}

@@ -1,20 +1,36 @@
+import { useEffect, useState } from 'react';
 import { Page, Layout } from '@shopify/polaris';
 import { TitleBar } from '@shopify/app-bridge-react';
-
-import { EventsCard } from '../components';
+import { useAuthenticatedFetch } from '../hooks/index.js';
 import { ShopSettingsForm } from '../components/ShopSettingsForm.jsx';
+import { Activate } from '../components/Activate';
+// import { EventsCard } from '../components';
 
 export default function HomePage() {
+	const authFetch = useAuthenticatedFetch();
+
+	const [shopData, setShopData] = useState({});
+
+	useEffect(() => {
+		authFetch('/api/shop/profile', {})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.shop) {
+					setShopData(data.shop);
+				}
+			});
+	}, []);
+
 	return (
 		<Page narrowWidth>
 			<TitleBar title="Shopify Pixel Alsoa" primaryAction={null} />
 			<Layout>
-				<Layout.Section>
-					<EventsCard />
-				</Layout.Section>
 				{/* <Layout.Section>
 					<EventsCard />
 				</Layout.Section> */}
+				<Layout.Section>
+					<Activate currectConnected={!!shopData.pixelId} />
+				</Layout.Section>
 				<Layout.Section>
 					<ShopSettingsForm
 						title={'TikTok Pixel Setting'}
@@ -22,6 +38,8 @@ export default function HomePage() {
 						tokenFieldTitle={
 							'TikTok Access Token(e59e085c6d485952b341b2b4028d3f14230e6795)'
 						}
+						currentId={shopData.tiktokPixelId}
+						currentToken={shopData.tiktokAccessToken}
 						idPropertyName={'tiktokPixelId'}
 						tokenPropertyName={'tiktokAccessToken'}
 					/>
@@ -33,6 +51,8 @@ export default function HomePage() {
 						tokenFieldTitle={
 							'Facebook Access Token(EAAKCaXnfa14BAFKnODBLtVwOAwlQvDWiF4nGeu52fHhsuSg69boDl3zywOtZC5lZC55qf8PcylUhoxL0SCGvTMUBEuTnGE3yefXO8wYxYc17mIMW1vGNQzhJv27qyI8BFlMMnylHYYzenqZCU3AYTVYOlaSOSwIhWQtp5VKWCd0828Y1w1M)'
 						}
+						currentId={shopData.facebookPixelId}
+						currentToken={shopData.facebookAccessToken}
 						idPropertyName={'facebookPixelId'}
 						tokenPropertyName={'facebookAccessToken'}
 					/>
@@ -46,6 +66,8 @@ export default function HomePage() {
 						tokenFieldTitle={
 							'Snapchat Access Token(eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNjc3NjM0NTgxLCJzdWIiOiI3NWIyOGVkYy1jYjg3LTQzYWItYjI5NC03Y2U0ZWE4ZWI2MmF-UFJPRFVDVElPTn4xMWE4YjNjNC01ZjQ5LTRkZGYtODc2MS1mOTMxMDNhMWI3NmUifQ.m6okR_GvZTovChQnWCbXS0Obgd1jD_QHmUl5daQRya8)'
 						}
+						currentId={shopData.snapchatPixelId}
+						currentToken={shopData.snapchatAccessToken}
 						idPropertyName={'snapchatPixelId'}
 						tokenPropertyName={'snapchatAccessToken'}
 					/>
@@ -57,7 +79,9 @@ export default function HomePage() {
 						tokenFieldTitle={
 							'Pinterest Access Token(pina_AIA2RFAWAB6EQAQAGBACIDXQYRIZXBYBAAAAALTNVE3GHS7LRBMWGQOQTFFCBQS3TGAJEHLXUS33FBWWCQCPXPOSAYMTYJYA)'
 						}
-						idPropertyName={'pinterestPixelId'}
+						currentId={shopData.pinterestApiKey}
+						currentToken={shopData.pinterestAccessToken}
+						idPropertyName={'pinterestApiKey'}
 						tokenPropertyName={'pinterestAccessToken'}
 					/>
 				</Layout.Section>

@@ -10,13 +10,12 @@ function setParamInCookie(browser, params, name) {
 
 register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 	// Bootstrap and insert pixel script tag here
-	const BASE_URL =
-		'https://opposite-locations-travis-sustainable.trycloudflare.com';
+	const BASE_URL = 'https://smith-psp-tramadol-interest.trycloudflare.com';
 	const endpointBase = `${BASE_URL}/api/events?id=${settings.accountID}`;
 	analytics.subscribe('all_standard_events', async (event) => {
 		console.log(event.name, event);
 
-		const search = event.context?.document?.location?.search;
+		const search = event.context.document.location.search;
 		if (search) {
 			const params = search.slice(1).split('&');
 
@@ -24,6 +23,17 @@ register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 			setParamInCookie(browser, params, 'fbclid');
 			setParamInCookie(browser, params, 'ScCid');
 			//TODO get pinterest epik
+		}
+
+		if (
+			event.name === 'page_viewed' &&
+			(/^\/products\/\S+/.test(event.context.document.location.pathname) ||
+				(/^\/collections\/\S+/.test(event.context.document.location.pathname) &&
+					!event.context.document.location.pathname.includes(
+						'/collections/all'
+					)))
+		) {
+			return;
 		}
 
 		const ttclidFromCookie = await browser.cookie.get('ttclid');

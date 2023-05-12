@@ -8,6 +8,9 @@ import ShopsController from './controllers/shops.js';
 import shopify from './services/shopify.js';
 import AppWebhooks from './webhooks/index.js';
 import { afterAuth } from './middlewares/afterAuth.js';
+import routes from './routes/index.js';
+
+const router = express.Router();
 
 const PORT = parseInt(
 	process.env.BACKEND_PORT || process.env.PORT || '3000',
@@ -47,10 +50,7 @@ app.use('/api/*', shopify.validateAuthenticatedSession());
 
 app.use(express.json());
 
-//TODO move to Express Router
-app.get('/api/events/count', EventsController.getEvents);
-app.get('/api/profile', ShopsController.getShopProfile);
-app.put('/api/profile', ShopsController.updateShopProfile);
+app.use('/api', routes(router));
 
 app.use(serveStatic(STATIC_PATH, { index: false }));
 

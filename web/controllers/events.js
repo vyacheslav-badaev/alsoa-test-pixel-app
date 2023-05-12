@@ -82,11 +82,11 @@ class EventsController {
 				result && (await ShopsStorage.increaseShopCounter(shop));
 			}
 
-			if (epik && shopData.snapchatPixelId && shopData.snapchatAccessToken) {
+			if (epik && shopData.pinterestApiKey && shopData.pinterestAccessToken) {
 				const result = await AlsoaService.sendEvent({
 					...alsoaEventData,
-					pixel_id: shopData.snapchatPixelId,
-					token: shopData.snapchatAccessToken,
+					pixel_id: shopData.pinterestApiKey,
+					token: shopData.pinterestAccessToken,
 					epik,
 				});
 				result && (await ShopsStorage.increaseShopCounter(shop));

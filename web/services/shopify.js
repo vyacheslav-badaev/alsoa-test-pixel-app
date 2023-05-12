@@ -117,16 +117,20 @@ export const pixelExtensionActivate = async (session) => {
 		const { body: resBody } = res;
 
 		if (resBody?.errors) {
+			console.log(resBody.errors[0].message);
 			throw new Error(resBody.errors[0].message);
 		}
+		if (resBody?.data?.webPixelCreate?.userErrors?.length) {
+			console.log(resBody.data.webPixelCreate.userErrors);
+			throw new Error(resBody.data.webPixelCreate.userErrors);
+		}
 
-		console.log(resBody?.data);
-
-		return resBody?.data;
+		return resBody?.data?.webPixelCreate;
 	} catch (e) {
-		console.error('Error response', e?.response?.errors);
-		console.error('Error message', e.message);
-		throw new Error(e.message);
+		// console.error('Error response', e?.response?.errors);
+		// console.error('Error message', e?.message);
+		console.log(e);
+		throw new Error(e);
 	}
 };
 
@@ -138,7 +142,6 @@ export const pixelExtensionActivate = async (session) => {
  */
 export const pixelExtensionDeactivate = async (session, id) => {
 	try {
-		const settingID = Buffer.from(session.shop).toString('base64');
 		const WEB_PIXEL_EXTENSION_ACTIVATE = `
 		mutation {
       webPixelDelete(id: "${id}") {
@@ -163,13 +166,18 @@ export const pixelExtensionDeactivate = async (session, id) => {
 		const { body: resBody } = res;
 
 		if (resBody?.errors) {
+			console.log(resBody.errors[0].message);
 			throw new Error(resBody.errors[0].message);
+		}
+		if (resBody?.data?.webPixelDelete?.userErrors?.length) {
+			console.log(resBody.data.webPixelDelete.userErrors);
+			throw new Error(resBody.data.webPixelDelete.userErrors);
 		}
 
 		return resBody?.data;
 	} catch (e) {
-		console.error('Error response', e?.response?.errors);
-		console.error('Error message', e.message);
+		// console.error('Error response', e?.response?.errors);
+		// console.error('Error message', e?.message);
 		throw new Error(e.message);
 	}
 };

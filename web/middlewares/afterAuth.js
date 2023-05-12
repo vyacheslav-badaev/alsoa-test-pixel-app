@@ -37,7 +37,7 @@ export const afterAuth = () => async (req, res, next) => {
 			});
 		}
 
-		await pixelExtensionActivate(session);
+		// await pixelExtensionActivate(session);
 
 		next();
 	} catch (e) {

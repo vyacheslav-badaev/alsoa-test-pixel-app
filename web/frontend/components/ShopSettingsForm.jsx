@@ -13,33 +13,29 @@ export function ShopSettingsForm({
 	title,
 	idFieldTitle,
 	tokenFieldTitle,
+	currentId,
+	currentToken,
 	idPropertyName,
 	tokenPropertyName,
 }) {
 	const authFetch = useAuthenticatedFetch();
-	const [pixelId, setPixelId] = useState('');
-	const [accessTokenId, setAccessTokenId] = useState('');
+	const [pixelId, setPixelId] = useState(currentId || '');
+	const [accessTokenId, setAccessTokenId] = useState(currentToken || '');
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const isDisabled = !pixelId || !accessTokenId;
 
 	useEffect(() => {
-		authFetch('/api/profile', {})
-			.then((response) => response.json())
-			.then((data) => {
-				if (data.shop) {
-					setPixelId(data.shop[idPropertyName]);
-					setAccessTokenId(data.shop[tokenPropertyName]);
-				}
-			});
-	}, []);
+		setPixelId(currentId || '');
+		setAccessTokenId(currentToken || '');
+	}, [currentId, currentToken]);
 
 	const toggleError = () => setError((prev) => !prev);
 	const toggleSuccess = () => setSuccess((prev) => !prev);
 
 	const handleSubmit = () => {
 		if (pixelId && accessTokenId) {
-			authFetch('/api/profile', {
+			authFetch('/api/shop/profile', {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
