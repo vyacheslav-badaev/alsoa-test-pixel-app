@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Page, Layout } from '@shopify/polaris';
+import {
+	Page,
+	Layout,
+	SkeletonPage,
+	SkeletonBodyText,
+	AlphaCard,
+} from '@shopify/polaris';
 import { TitleBar } from '@shopify/app-bridge-react';
 import { useAuthenticatedFetch } from '../hooks/index.js';
 import { ShopSettingsForm } from '../components/ShopSettingsForm.jsx';
@@ -10,6 +16,7 @@ export default function HomePage() {
 	const authFetch = useAuthenticatedFetch();
 
 	const [shopData, setShopData] = useState({});
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		authFetch('/api/shop/profile', {})
@@ -18,10 +25,23 @@ export default function HomePage() {
 				if (data.shop) {
 					setShopData(data.shop);
 				}
+				setLoading(false);
 			});
 	}, []);
 
-	return (
+	return loading ? (
+		<SkeletonPage title="Shopify Pixel Alsoa" narrowWidth>
+			<Layout>
+				{[...Array(5)].map((x, i) => (
+					<Layout.Section key={i}>
+						<AlphaCard>
+							<SkeletonBodyText />
+						</AlphaCard>
+					</Layout.Section>
+				))}
+			</Layout>
+		</SkeletonPage>
+	) : (
 		<Page narrowWidth>
 			<TitleBar title="Shopify Pixel Alsoa" primaryAction={null} />
 			<Layout>
