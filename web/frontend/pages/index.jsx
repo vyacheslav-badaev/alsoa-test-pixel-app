@@ -30,7 +30,8 @@ export default function HomePage() {
 	}, []);
 
 	return loading ? (
-		<SkeletonPage title="Shopify Pixel Alsoa" narrowWidth>
+		<SkeletonPage narrowWidth>
+			<TitleBar title="Shopify Pixel Alsoa" primaryAction={null} />
 			<Layout>
 				{[...Array(5)].map((x, i) => (
 					<Layout.Section key={i}>
