@@ -1,0 +1,12 @@
+.form_textarea {
+	width: 100%;
+	height: 120px;
+	border: var(--p-border-width-1) solid var(--p-border-shadow);
+	resize: none;
+	border-radius: var(--p-border-radius-1);
+	transition: 0.03s;
+}
+
+.form_textarea:focus {
+	outline: var(--p-border-width-2) solid var(--p-focused);
+}

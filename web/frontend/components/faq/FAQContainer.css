@@ -1,0 +1,10 @@
+.help-container_wrap {
+	display: flex;
+	justify-content: center;
+	margin: 30px auto 0 auto;
+	max-width: 560px;
+}
+
+.help-container-items_wrap {
+	margin-top: 15px;
+}

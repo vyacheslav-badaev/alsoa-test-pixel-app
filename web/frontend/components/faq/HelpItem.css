@@ -1,0 +1,7 @@
+.help-item_header:hover {
+	cursor: pointer;
+}
+
+.help-item-body_wrap {
+	padding: 0 var(--p-space-5) var(--p-space-5) var(--p-space-5);
+}

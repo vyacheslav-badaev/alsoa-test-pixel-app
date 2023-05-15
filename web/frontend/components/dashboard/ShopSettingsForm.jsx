@@ -7,7 +7,7 @@ import {
 	Button,
 	Toast,
 } from '@shopify/polaris';
-import { useAuthenticatedFetch } from '../hooks/index.js';
+import { useAuthenticatedFetch } from '../../hooks/index.js';
 
 export function ShopSettingsForm({
 	title,

@@ -15,6 +15,7 @@
   "dependencies": {
     "@prisma/client": "^4.6.1",
     "@shopify/shopify-app-express": "^2.0.0",
+    "@shopify/shopify-app-session-storage-mysql": "^1.1.5",
     "@shopify/shopify-app-session-storage-sqlite": "^1.2.1",
     "axios": "^1.4.0",
     "compression": "^1.7.4",

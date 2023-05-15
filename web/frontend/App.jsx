@@ -1,9 +1,13 @@
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import { Frame } from '@shopify/polaris';
-import './assets/style.css'
+import './assets/style.css';
 
-import { AppBridgeProvider, QueryProvider, PolarisProvider } from './components';
+import {
+	AppBridgeProvider,
+	QueryProvider,
+	PolarisProvider,
+} from './components/providers';
 
 export default function App() {
 	// Any .tsx or .jsx files in /pages will become a route

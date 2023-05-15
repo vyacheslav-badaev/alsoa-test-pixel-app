@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:../database.sqlite"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Shop {
@@ -16,14 +16,14 @@ model Shop {
   shopifyId            String?
   eventsCount          Int?     @default(0)
   pixelId              String?
-  tiktokPixelId        String?
-  tiktokAccessToken    String?
-  facebookPixelId      String?
-  facebookAccessToken  String?
-  snapchatPixelId      String?
-  snapchatAccessToken  String?
-  pinterestApiKey      String?
-  pinterestAccessToken String?
+  tiktokPixelId        String?  @db.Text
+  tiktokAccessToken    String?  @db.Text
+  facebookPixelId      String?  @db.Text
+  facebookAccessToken  String?  @db.Text
+  snapchatPixelId      String?  @db.Text
+  snapchatAccessToken  String?  @db.Text
+  pinterestApiKey      String?  @db.Text
+  pinterestAccessToken String?  @db.Text
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
@@ -34,7 +34,7 @@ model shopify_sessions {
   state            String
   isOnline         Int
   expires          Int?
-  scope            String?
+  scope            String? @db.Text
   accessToken      String?
   onlineAccessInfo String?
 }

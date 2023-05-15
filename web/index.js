@@ -4,7 +4,6 @@ import { readFileSync } from 'fs';
 import express from 'express';
 import serveStatic from 'serve-static';
 import EventsController from './controllers/events.js';
-import ShopsController from './controllers/shops.js';
 import shopify from './services/shopify.js';
 import AppWebhooks from './webhooks/index.js';
 import { afterAuth } from './middlewares/afterAuth.js';
