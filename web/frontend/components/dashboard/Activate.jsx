@@ -75,15 +75,7 @@ export function Activate({ currectConnected }) {
 						onAction: closeConfirmModal,
 					},
 				]}
-			>
-				{/* <Modal.Section>
-					<TextContainer>
-						<p>
-							
-						</p>
-					</TextContainer>
-				</Modal.Section> */}
-			</Modal>
+			/>
 
 			<div className={'accountActiveWrapper'}>
 				<AccountConnection

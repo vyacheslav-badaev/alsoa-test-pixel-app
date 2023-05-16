@@ -1,6 +1,6 @@
 import { BillingInterval, LATEST_API_VERSION } from '@shopify/shopify-api';
 import { shopifyApp } from '@shopify/shopify-app-express';
-import { MySQLSessionStorage } from '@shopify/shopify-app-session-storage-mysql';
+import { RedisSessionStorage } from '@shopify/shopify-app-session-storage-redis';
 import { restResources } from '@shopify/shopify-api/rest/admin/2023-04';
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
@@ -28,9 +28,7 @@ const shopify = shopifyApp({
 		path: '/api/webhooks',
 	},
 	// This should be replaced with your preferred storage strategy
-	sessionStorage: new MySQLSessionStorage(process.env.DATABASE_URL, {
-		connectionPoolLimit: 10,
-	}),
+	sessionStorage: new RedisSessionStorage(process.env.REDIS_URL),
 });
 
 /**

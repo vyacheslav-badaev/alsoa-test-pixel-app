@@ -1,4 +1,4 @@
-import { Layout, LegacyStack, Text, Toast } from '@shopify/polaris';
+import { Layout, LegacyStack, Modal, Text, Toast } from '@shopify/polaris';
 import { useState } from 'react';
 import { SupportForm } from './SupportForm';
 import { useAuthenticatedFetch } from '../../hooks';
@@ -9,23 +9,19 @@ export function ContactUsContainer() {
 	const authFetch = useAuthenticatedFetch();
 
 	const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleError = () => setError((prev) => !prev);
-	const toggleSuccess = () => setSuccess((prev) => !prev);
+	const toggleError = () => setError((prev) => !prev);
+	const toggleSuccess = () => setIsModalOpen(true);
 
-  const toastMarkupError = error ? (
+	const toastMarkupError = error ? (
 		<Toast
 			content="Server error"
 			error
 			onDismiss={toggleError}
 			duration={5000}
 		/>
-	) : null;
-
-	const toastMarkupSuccess = success ? (
-		<Toast content="Success" onDismiss={toggleSuccess} duration={5000} />
 	) : null;
 
 	const handleSendForm = async (form) => {
@@ -40,10 +36,8 @@ export function ContactUsContainer() {
 				body: JSON.stringify(form),
 			})
 				.then(toggleSuccess)
-				.catch(toggleError);
-
-			setSuccess(true);
-			setLoading(false);
+				.catch(toggleError)
+				.finally(() => setLoading(false));
 		} catch (error) {
 			console.log(error);
 		}
@@ -52,6 +46,17 @@ export function ContactUsContainer() {
 
 	return (
 		<div className="support-container_wrap">
+			<Modal
+				instant
+				open={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				title="Thank you"
+			>
+				<Modal.Section>
+					<p>We will answer you as soon as possible</p>
+				</Modal.Section>
+			</Modal>
+
 			<Layout>
 				<Layout.Section>
 					<LegacyStack vertical alignment="center">
@@ -67,8 +72,7 @@ export function ContactUsContainer() {
 					<SupportForm onSubmit={handleSendForm} loading={loading} />
 				</Layout.Section>
 			</Layout>
-      {toastMarkupError}
-			{toastMarkupSuccess}
+			{toastMarkupError}
 		</div>
 	);
 }
