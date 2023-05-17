@@ -36,10 +36,16 @@ export default function getEventData(event, ip) {
 
 	if (event.name === EventTypes.PRODUCT_ADDED_TO_CART) {
 		data.currency = event.data.cartLine.cost.totalAmount.currencyCode;
+		data.content_name = event.data.cartLine.merchandise.product.title;
 	}
 
 	if (event.name === EventTypes.PRODUCT_VIEWED) {
 		data.currency = event.data.productVariant.price.currencyCode;
+		data.content_name = event.data.productVariant.product.title;
+	}
+
+	if (event.name === EventTypes.COLLECTION_VIEWED) {
+		data.content_name = event.data.collection.title;
 	}
 
 	return data;
