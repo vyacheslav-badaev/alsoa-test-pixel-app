@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
+    "request-ip": "^3.3.0",
     "serve-static": "^1.14.1"
   },
   "devDependencies": {

@@ -1,3 +1,4 @@
+import requestIp from "request-ip";
 import ShopsStorage from '../services/shopsStorage.js';
 import QueuesService from '../services/queues.js';
 
@@ -13,7 +14,9 @@ class EventsController {
 	 * */
 	async addEvent(req, res, next) {
 		try {
-			QueuesService.addToQueue(req.query, req.body);
+			const ip = requestIp.getClientIp(req);
+
+			QueuesService.addToQueue(req.query, req.body, ip);
 
 			return res.status(200).send({ message: 'Event added' });
 		} catch (error) {

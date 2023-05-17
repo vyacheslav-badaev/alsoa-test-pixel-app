@@ -18,7 +18,13 @@ class AlsoaService {
 	async sendEvent(event) {
 		try {
 			const data = await this.client.post(`/events`, event);
-			// console.log('alsoaResult', data.data?.results[0].response?.error_records || data.data);
+			if (data.data?.results[0].response?.error_records) {
+				console.log(
+					'sendEventError',
+					data.data?.results[0].response?.error_records
+				);
+			}
+			// console.log('alsoaResult', data.data?.results[0].response?.error_records || data.data?.results);
 			return data.status === 200;
 		} catch (error) {
 			throw new Error(error.message);

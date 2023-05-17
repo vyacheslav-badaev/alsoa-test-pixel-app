@@ -2,7 +2,7 @@ import AlsoaService from '../services/alsoa.js';
 import ShopsStorage from '../services/shopsStorage.js';
 import getEventData from './getEventData.js';
 
-export default async function handleEvent(query, body) {
+export default async function handleEvent(query, body, ip) {
 	const { id: accountID } = query;
 	const eventData = JSON.parse(body);
 	const { event, ttclid, fbclid, sclid, epik } = eventData;
@@ -15,7 +15,7 @@ export default async function handleEvent(query, body) {
 		throw new Error('Shop does not have tiktok pixel id or token');
 	}
 
-	const alsoaEventData = getEventData(event);
+	const alsoaEventData = getEventData(event, ip);
 
 	if (ttclid && shopData.tiktokPixelId && shopData.tiktokAccessToken) {
 		await AlsoaService.sendEvent({

@@ -7,7 +7,7 @@ const start = async () => {
 	try {
 		queue.process((job, done) => {
 			console.log('Process job -> ' + job.id);
-			handleEvent(job.data.query, job.data.body)
+			handleEvent(job.data.query, job.data.body, job.data.ip)
 				.then(() => {
 					console.log('Done job -> ' + job.id);
 					done(null, true);

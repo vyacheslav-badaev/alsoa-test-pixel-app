@@ -1,13 +1,13 @@
 import { AlsoaEvents, EventTypes } from '../constants/alsoaEvents.js';
 
-export default function getEventData(event) {
+export default function getEventData(event, ip) {
 	const data = {
 		event: AlsoaEvents[event.name],
 		time: event.timestamp,
 		url: event.context.document.referrer,
 		uas: event.context.navigator.userAgent,
 		external_id: event.clientId,
-		// ip,
+		ip,
 		content_name: event.context.document.title,
 		// value,
 		// content_category,
