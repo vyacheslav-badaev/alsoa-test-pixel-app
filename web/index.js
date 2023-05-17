@@ -9,6 +9,7 @@ import shopify from './services/shopify.js';
 import AppWebhooks from './webhooks/index.js';
 import { afterAuth } from './middlewares/afterAuth.js';
 import routes from './routes/index.js';
+import * as cors from 'cors';
 
 const router = express.Router();
 
@@ -43,6 +44,7 @@ app.post(
 app.post(
 	'/api/events',
 	express.text({ type: '*/*', limit: '2mb' }),
+	cors(),
 	EventsController.addEvent
 );
 
