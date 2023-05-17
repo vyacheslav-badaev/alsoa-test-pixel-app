@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { BillingInterval, LATEST_API_VERSION } from '@shopify/shopify-api';
 import { shopifyApp } from '@shopify/shopify-app-express';
 import { RedisSessionStorage } from '@shopify/shopify-app-session-storage-redis';
