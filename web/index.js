@@ -9,7 +9,7 @@ import shopify from './services/shopify.js';
 import AppWebhooks from './webhooks/index.js';
 import { afterAuth } from './middlewares/afterAuth.js';
 import routes from './routes/index.js';
-import * as cors from 'cors';
+import cors from 'cors';
 
 const router = express.Router();
 
