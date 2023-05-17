@@ -17,6 +17,7 @@ export function ShopSettingsForm({
 	currentToken,
 	idPropertyName,
 	tokenPropertyName,
+	refetchShop,
 }) {
 	const authFetch = useAuthenticatedFetch();
 	const [pixelId, setPixelId] = useState(currentId || '');
@@ -45,7 +46,10 @@ export function ShopSettingsForm({
 					[tokenPropertyName]: accessTokenId,
 				}),
 			})
-				.then(toggleSuccess)
+				.then(() => {
+					toggleSuccess();
+					refetchShop();
+				})
 				.catch(toggleError);
 		}
 	};

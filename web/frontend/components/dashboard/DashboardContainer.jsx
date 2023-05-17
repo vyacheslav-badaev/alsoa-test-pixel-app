@@ -7,11 +7,11 @@ import { useAuthenticatedFetch } from '../../hooks';
 
 import 'driver.js/dist/driver.min.css';
 
-export function DashboardContainer({ shopData }) {
+export function DashboardContainer({ shopData, refetchShop }) {
 	const authFetch = useAuthenticatedFetch();
 
 	const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(
-		shopData?.isOnboardingCompleted || false
+		shopData.isOnboardingCompleted || false
 	);
 
 	useEffect(() => {
@@ -24,6 +24,7 @@ export function DashboardContainer({ shopData }) {
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ isOnboardingCompleted: true }),
 					});
+					refetchShop();
 				},
 			});
 
@@ -33,7 +34,7 @@ export function DashboardContainer({ shopData }) {
 					popover: {
 						title: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae sapien at metus sodales pharetra</p>`,
 						description: '',
-						position: "right",
+						position: 'right',
 					},
 				},
 				{
@@ -41,7 +42,7 @@ export function DashboardContainer({ shopData }) {
 					popover: {
 						title: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae sapien at metus sodales pharetra</p>`,
 						description: '',
-						position: "right",
+						position: 'right',
 					},
 				},
 				{
@@ -49,7 +50,7 @@ export function DashboardContainer({ shopData }) {
 					popover: {
 						title: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae sapien at metus sodales pharetra</p>`,
 						description: '',
-						position: "right",
+						position: 'right',
 					},
 				},
 				{
@@ -57,7 +58,7 @@ export function DashboardContainer({ shopData }) {
 					popover: {
 						title: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae sapien at metus sodales pharetra</p>`,
 						description: '',
-						position: "right",
+						position: 'right',
 					},
 				},
 				{
@@ -65,7 +66,7 @@ export function DashboardContainer({ shopData }) {
 					popover: {
 						title: `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae sapien at metus sodales pharetra</p>`,
 						description: '',
-						position: "right",
+						position: 'right',
 					},
 				},
 			]);
@@ -78,7 +79,10 @@ export function DashboardContainer({ shopData }) {
 		<Layout>
 			<Layout.Section>
 				<div id="activate">
-					<Activate currectConnected={!!shopData.pixelId} />
+					<Activate
+						currectConnected={!!shopData.pixelId}
+						refetchShop={refetchShop}
+					/>
 				</div>
 			</Layout.Section>
 			<Layout.Section>
@@ -93,6 +97,7 @@ export function DashboardContainer({ shopData }) {
 						currentToken={shopData.tiktokAccessToken}
 						idPropertyName={'tiktokPixelId'}
 						tokenPropertyName={'tiktokAccessToken'}
+						refetchShop={refetchShop}
 					/>
 				</div>
 			</Layout.Section>
@@ -108,6 +113,7 @@ export function DashboardContainer({ shopData }) {
 						currentToken={shopData.facebookAccessToken}
 						idPropertyName={'facebookPixelId'}
 						tokenPropertyName={'facebookAccessToken'}
+						refetchShop={refetchShop}
 					/>
 				</div>
 			</Layout.Section>
@@ -125,6 +131,7 @@ export function DashboardContainer({ shopData }) {
 						currentToken={shopData.snapchatAccessToken}
 						idPropertyName={'snapchatPixelId'}
 						tokenPropertyName={'snapchatAccessToken'}
+						refetchShop={refetchShop}
 					/>
 				</div>
 			</Layout.Section>
@@ -140,6 +147,7 @@ export function DashboardContainer({ shopData }) {
 						currentToken={shopData.pinterestAccessToken}
 						idPropertyName={'pinterestApiKey'}
 						tokenPropertyName={'pinterestAccessToken'}
+						refetchShop={refetchShop}
 					/>
 				</div>
 			</Layout.Section>

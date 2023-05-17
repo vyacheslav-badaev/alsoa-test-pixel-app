@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { AccountConnection, Toast, Spinner, Modal } from '@shopify/polaris';
 import { useAuthenticatedFetch } from '../../hooks/index.js';
 
-export function Activate({ currectConnected }) {
+export function Activate({ currectConnected, refetchShop }) {
 	const authFetch = useAuthenticatedFetch();
 
 	const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ export function Activate({ currectConnected }) {
 			.then((res) => {
 				if (res.status === 200) {
 					setConnected(!connected);
+					refetchShop();
 				} else {
 					handleActionError();
 				}
