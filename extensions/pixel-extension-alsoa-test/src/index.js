@@ -10,7 +10,8 @@ function setParamInCookie(browser, params, name) {
 
 register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 	// Bootstrap and insert pixel script tag here
-	const BASE_URL = 'https://alsoa-staging-demo.dev-test.pro';
+	const BASE_URL =
+		'https://rebel-findarticles-referred-edited.trycloudflare.com';
 	const endpointBase = `${BASE_URL}/api/events?id=${settings.accountID}`;
 	analytics.subscribe('all_standard_events', async (event) => {
 		console.log(event.name, event);
@@ -21,8 +22,8 @@ register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 
 			setParamInCookie(browser, params, 'ttclid');
 			setParamInCookie(browser, params, 'fbclid');
-			setParamInCookie(browser, params, 'ScCid');
-			//TODO get pinterest epik
+			setParamInCookie(browser, params, 'sclid');
+			setParamInCookie(browser, params, 'epik');
 		}
 
 		if (
@@ -38,7 +39,8 @@ register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 
 		const ttclidFromCookie = await browser.cookie.get('ttclid');
 		const fbclidFromCookie = await browser.cookie.get('fbclid');
-		const sclidFromCookie = await browser.cookie.get('ScCid');
+		const sclidFromCookie = await browser.cookie.get('sclid');
+		const epikFromCookie = await browser.cookie.get('epik');
 		if (ttclidFromCookie || fbclidFromCookie || sclidFromCookie) {
 			browser.sendBeacon(
 				endpointBase,
@@ -47,6 +49,7 @@ register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 					ttclid: ttclidFromCookie,
 					fbclid: fbclidFromCookie,
 					sclid: sclidFromCookie,
+					epik: epikFromCookie,
 				})
 			);
 		}

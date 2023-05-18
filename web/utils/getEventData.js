@@ -9,8 +9,6 @@ export default function getEventData(event, ip) {
 		external_id: event.clientId,
 		ip,
 		content_name: event.context.document.title,
-		// value,
-		// content_category,
 		// first_name: "" //TODO event "page_viewed" not provided by pixel extension  need custom solution
 		// last_name: "" //TODO event "page_viewed" not provided by pixel extension need custom solution
 	};
@@ -32,16 +30,19 @@ export default function getEventData(event, ip) {
 		data.postal = event.data.checkout.shippingAddress?.zip;
 		data.mobile = event.data.checkout.phone;
 		data.currency = event.data.checkout.currencyCode;
+		data.value = event.data.checkout.subtotalPrice.amount;
 	}
 
 	if (event.name === EventTypes.PRODUCT_ADDED_TO_CART) {
 		data.currency = event.data.cartLine.cost.totalAmount.currencyCode;
 		data.content_name = event.data.cartLine.merchandise.product.title;
+		data.value = event.data.cartLine.cost.totalAmount.amount;
 	}
 
 	if (event.name === EventTypes.PRODUCT_VIEWED) {
 		data.currency = event.data.productVariant.price.currencyCode;
 		data.content_name = event.data.productVariant.product.title;
+		data.content_category = event.data.productVariant.product.type;
 	}
 
 	if (event.name === EventTypes.COLLECTION_VIEWED) {
