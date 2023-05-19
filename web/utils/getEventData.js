@@ -37,6 +37,7 @@ export default function getEventData(event, ip) {
 		data.currency = event.data.cartLine.cost.totalAmount.currencyCode;
 		data.content_name = event.data.cartLine.merchandise.product.title;
 		data.value = event.data.cartLine.cost.totalAmount.amount;
+		data.content_category = event.data.cartLine.merchandise.product.type;
 	}
 
 	if (event.name === EventTypes.PRODUCT_VIEWED) {

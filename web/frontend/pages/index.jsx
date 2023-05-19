@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Page } from '@shopify/polaris';
 import { TitleBar } from '@shopify/app-bridge-react';
 import { useAppQuery } from '../hooks/index.js';
@@ -10,6 +10,7 @@ import { ContactUsContainer } from '../components/contactUs/ContactUsContainer.j
 
 export default function HomePage() {
 	const [selectedTab, setSelectedTab] = useState(0);
+	const [shop, setShop] = useState();
 
 	const {
 		data: responseShopData,
@@ -19,6 +20,12 @@ export default function HomePage() {
 	} = useAppQuery({
 		url: '/api/shop/profile',
 	});
+
+	useEffect(() => {
+		if (responseShopData?.shop) {
+			setShop({ ...responseShopData.shop });
+		}
+	}, [responseShopData]);
 
 	const tabs = [
 		{
@@ -42,7 +49,7 @@ export default function HomePage() {
 		setSelectedTab(selectedTabIndex);
 	}, []);
 
-	return isLoadingShop || !responseShopData?.shop ? (
+	return isLoadingShop || !shop ? (
 		<DashboardSkeleton />
 	) : (
 		<>
@@ -55,8 +62,9 @@ export default function HomePage() {
 				<TitleBar title="Shopify Pixel Alsoa" primaryAction={null} />
 				{selectedTab === 0 && (
 					<DashboardContainer
-						shopData={responseShopData.shop}
+						shopData={shop}
 						refetchShop={refetchShop}
+						isRefetching={isRefetchingShop}
 					/>
 				)}
 				{selectedTab === 1 && <FAQContainer />}

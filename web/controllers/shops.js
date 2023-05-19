@@ -3,6 +3,7 @@ import {
 	pixelExtensionActivate,
 	pixelExtensionDeactivate,
 } from '../services/shopify.js';
+import AlsoaService from '../services/alsoa.js';
 
 class ShopsController {
 	/**
@@ -35,6 +36,83 @@ class ShopsController {
 	 * */
 	async updateShopProfile(req, res, next) {
 		try {
+			const {
+				tiktokPixelId,
+				tiktokAccessToken,
+				facebookPixelId,
+				facebookAccessToken,
+				snapchatPixelId,
+				snapchatAccessToken,
+				pinterestApiKey,
+				pinterestAccessToken,
+			} = req.body;
+
+			if (tiktokPixelId && tiktokAccessToken) {
+				const { data, status } = await AlsoaService.sendEvent({
+					pixel_id: tiktokPixelId,
+					token: tiktokAccessToken,
+					ttclid: ' ',
+					event: 'ViewContent',
+				});
+				if (status !== 200) {
+					return res.sendStatus(status);
+				}
+				if (data.results?.shift()?.response?.code === 40105) {
+					return res.status(400).send({ message: 'Invalid pixel id or token' });
+				}
+			}
+
+			if (facebookPixelId && facebookAccessToken) {
+				const { data, status } = await AlsoaService.sendEvent({
+					pixel_id: facebookPixelId,
+					token: facebookAccessToken,
+					fbclid: ' ',
+					event: 'ViewContent',
+				});
+				if (status !== 200) {
+					return res.sendStatus(status);
+				}
+				if (
+					data.results?.shift()?.error?.includes('Invalid OAuth access token')
+				) {
+					return res.status(400).send({ message: 'Invalid pixel id or token' });
+				}
+			}
+
+			if (snapchatPixelId && snapchatAccessToken) {
+				const { data, status } = await AlsoaService.sendEvent({
+					pixel_id: snapchatPixelId,
+					token: snapchatAccessToken,
+					sclid: ' ',
+					event: 'ViewContent',
+				});
+				if (status !== 200) {
+					return res.sendStatus(status);
+				}
+				const result = data.results?.shift();
+				if (
+					result?.response?.status === 'FAILED' &&
+					result?.response?.reason === 'Invalid access token'
+				) {
+					return res.status(400).send({ message: 'Invalid pixel id or token' });
+				}
+			}
+
+			if (pinterestApiKey && pinterestAccessToken) {
+				const { data, status } = await AlsoaService.sendEvent({
+					pixel_id: pinterestApiKey,
+					token: pinterestAccessToken,
+					epik: ' ',
+					event: 'ViewContent',
+				});
+				if (status !== 200) {
+					return res.sendStatus(status);
+				}
+				if (data.results?.shift()?.response?.code === 2) {
+					return res.status(400).send({ message: 'Invalid pixel id or token' });
+				}
+			}
+
 			const session = res.locals.shopify.session;
 			const shop = await ShopsStorage.updateShop(session.shop, req.body);
 			if (!shop) {

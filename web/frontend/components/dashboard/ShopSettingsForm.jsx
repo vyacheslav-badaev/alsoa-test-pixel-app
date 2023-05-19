@@ -18,13 +18,20 @@ export function ShopSettingsForm({
 	idPropertyName,
 	tokenPropertyName,
 	refetchShop,
+	isRefetching,
 }) {
 	const authFetch = useAuthenticatedFetch();
 	const [pixelId, setPixelId] = useState(currentId || '');
 	const [accessTokenId, setAccessTokenId] = useState(currentToken || '');
 	const [error, setError] = useState(false);
+	const [errorText, setErrorText] = useState('Server error');
 	const [success, setSuccess] = useState(false);
+	const [loading, setLoading] = useState(isRefetching);
 	const isDisabled = !pixelId || !accessTokenId;
+
+	useEffect(() => {
+		setLoading(isRefetching);
+	}, [isRefetching]);
 
 	useEffect(() => {
 		setPixelId(currentId || '');
@@ -36,6 +43,7 @@ export function ShopSettingsForm({
 
 	const handleSubmit = () => {
 		if (pixelId && accessTokenId) {
+			setLoading(true);
 			authFetch('/api/shop/profile', {
 				method: 'PUT',
 				headers: {
@@ -46,21 +54,27 @@ export function ShopSettingsForm({
 					[tokenPropertyName]: accessTokenId,
 				}),
 			})
-				.then(() => {
-					toggleSuccess();
-					refetchShop();
+				.then(async (res) => {
+					if (res.status === 200) {
+						toggleSuccess();
+					} else if (res.status === 400) {
+						setErrorText((await res.json()).message);
+						toggleError();
+					} else {
+						setErrorText('Server error');
+						toggleError();
+					}
 				})
-				.catch(toggleError);
+				.catch(() => {
+					setErrorText('Server error');
+					toggleError();
+				})
+				.finally(refetchShop);
 		}
 	};
 
 	const toastMarkupError = error ? (
-		<Toast
-			content="Server error"
-			error
-			onDismiss={toggleError}
-			duration={5000}
-		/>
+		<Toast content={errorText} error onDismiss={toggleError} duration={5000} />
 	) : null;
 
 	const toastMarkupSuccess = success ? (
@@ -83,7 +97,7 @@ export function ShopSettingsForm({
 						onChange={setAccessTokenId}
 						value={accessTokenId}
 					/>
-					<Button submit disabled={isDisabled}>
+					<Button submit disabled={isDisabled} loading={loading}>
 						Save
 					</Button>
 				</FormLayout>

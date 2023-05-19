@@ -13,7 +13,7 @@ class AlsoaService {
 	/**
 	 * Send event to Alsoa API
 	 * @param event
-	 * @return {Promise<boolean>}
+	 * @return {Promise<import('axios').AxiosResponse<any, any>>}
 	 */
 	async sendEvent(event) {
 		try {
@@ -28,7 +28,7 @@ class AlsoaService {
 			// 	'alsoaResult',
 			// 	data.data?.results[0].response?.error_records || data.data?.results
 			// );
-			return data.status === 200;
+			return data;
 		} catch (error) {
 			throw new Error(error.message);
 		}

@@ -7,7 +7,7 @@ import { useAuthenticatedFetch } from '../../hooks';
 
 import 'driver.js/dist/driver.min.css';
 
-export function DashboardContainer({ shopData, refetchShop }) {
+export function DashboardContainer({ shopData, refetchShop, isRefetching }) {
 	const authFetch = useAuthenticatedFetch();
 
 	const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(
@@ -98,6 +98,7 @@ export function DashboardContainer({ shopData, refetchShop }) {
 						idPropertyName={'tiktokPixelId'}
 						tokenPropertyName={'tiktokAccessToken'}
 						refetchShop={refetchShop}
+						isRefetching={isRefetching}
 					/>
 				</div>
 			</Layout.Section>
@@ -114,6 +115,7 @@ export function DashboardContainer({ shopData, refetchShop }) {
 						idPropertyName={'facebookPixelId'}
 						tokenPropertyName={'facebookAccessToken'}
 						refetchShop={refetchShop}
+						isRefetching={isRefetching}
 					/>
 				</div>
 			</Layout.Section>
@@ -132,6 +134,7 @@ export function DashboardContainer({ shopData, refetchShop }) {
 						idPropertyName={'snapchatPixelId'}
 						tokenPropertyName={'snapchatAccessToken'}
 						refetchShop={refetchShop}
+						isRefetching={isRefetching}
 					/>
 				</div>
 			</Layout.Section>
@@ -148,6 +151,7 @@ export function DashboardContainer({ shopData, refetchShop }) {
 						idPropertyName={'pinterestApiKey'}
 						tokenPropertyName={'pinterestAccessToken'}
 						refetchShop={refetchShop}
+						isRefetching={isRefetching}
 					/>
 				</div>
 			</Layout.Section>
