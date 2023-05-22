@@ -161,14 +161,6 @@ export const SupportForm = ({ loading, onSubmit }) => {
 						/>
 					)}
 				</LegacyStack>
-				<DropZone
-					label="Field label"
-					onDrop={handleDropZoneDrop}
-					disabled={loading}
-				>
-					{uploadedFiles}
-					{fileUpload}
-				</DropZone>
 				<ButtonGroup fullWidth>
 					<Button loading={loading} submit primary>
 						Submit

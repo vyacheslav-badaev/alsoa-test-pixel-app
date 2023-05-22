@@ -10,8 +10,7 @@ function setParamInCookie(browser, params, name) {
 
 register(({ configuration, analytics, browser, settings, _pixelInfo }) => {
 	// Bootstrap and insert pixel script tag here
-	const BASE_URL =
-		'https://rebel-findarticles-referred-edited.trycloudflare.com';
+	const BASE_URL = 'https://alsoa-staging-demo.dev-test.pro';
 	const endpointBase = `${BASE_URL}/api/events?id=${settings.accountID}`;
 	analytics.subscribe('all_standard_events', async (event) => {
 		console.log(event.name, event);

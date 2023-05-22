@@ -23,6 +23,7 @@ export function ShopSettingsForm({
 	const authFetch = useAuthenticatedFetch();
 	const [pixelId, setPixelId] = useState(currentId || '');
 	const [accessTokenId, setAccessTokenId] = useState(currentToken || '');
+	const [isError, setIsError] = useState(false);
 	const [error, setError] = useState(false);
 	const [errorText, setErrorText] = useState('Server error');
 	const [success, setSuccess] = useState(false);
@@ -59,6 +60,7 @@ export function ShopSettingsForm({
 						toggleSuccess();
 					} else if (res.status === 400) {
 						setErrorText((await res.json()).message);
+						setIsError(true);
 						toggleError();
 					} else {
 						setErrorText('Server error');
@@ -89,17 +91,27 @@ export function ShopSettingsForm({
 						label={idFieldTitle}
 						requiredIndicator
 						onChange={setPixelId}
+						onFocus={() => {
+							setIsError(false);
+						}}
 						value={pixelId}
+						error={isError}
 					/>
 					<TextField
 						label={tokenFieldTitle}
 						requiredIndicator
 						onChange={setAccessTokenId}
+						onFocus={() => {
+							setIsError(false);
+						}}
 						value={accessTokenId}
+						error={isError}
 					/>
-					<Button submit disabled={isDisabled} loading={loading}>
-						Save
-					</Button>
+					<div style={{ float: 'right' }}>
+						<Button submit disabled={isDisabled} loading={loading} primary>
+							Save
+						</Button>
+					</div>
 				</FormLayout>
 			</Form>
 			<>
